@@ -27,5 +27,11 @@ qualifier = "org"
 organization = "ALI"
 application = "ALI"
 
+[memory_policy]
+max_entry_bytes = 65536
+max_vault_bytes = 67108864
+max_list_entries = 100
+max_search_results = 5
+
 [documents]
 allowed_text_extensions = [".txt", ".md", ".csv", ".log", ".json"]

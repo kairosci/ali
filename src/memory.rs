@@ -135,6 +135,140 @@ fn read_password(prompt: &str) -> Result<Zeroizing<String>> {
     Ok(Zeroizing::new(value))
 }
 
+fn validate_passphrase(passphrase: &str) -> Result<()> {
+    if passphrase.chars().count() < 12 {
+        bail!("vault passphrase must contain at least 12 characters");
+    }
+    Ok(())
+}
+
+pub fn initialize_with_passphrase(
+    root: &Path,
+    passphrase: Zeroizing<String>,
+    config: &Config,
+) -> Result<()> {
+    validate_passphrase(&passphrase)?;
+    ensure_private_dir(root)?;
+    let _lock = lock(root)?;
+    if root.join("memory.vault").exists() {
+        bail!("memory vault already exists");
+    }
+    save(
+        root,
+        &Vault {
+            version: 1,
+            entries: vec![],
+        },
+        passphrase.as_bytes(),
+        config,
+    )
+}
+
+pub async fn add_with_passphrase(
+    root: &Path,
+    text: Zeroizing<String>,
+    passphrase: Zeroizing<String>,
+    agent_id: Option<&str>,
+    config: &Config,
+) -> Result<()> {
+    validate_passphrase(&passphrase)?;
+    validate_agent_id(agent_id, config)?;
+    if text.trim().is_empty() {
+        bail!("memory text is empty");
+    }
+    if text.len() as u64 > config.memory_policy.max_entry_bytes {
+        bail!("memory text exceeds the configured size limit");
+    }
+    ensure_private_dir(root)?;
+    let _lock = lock(root)?;
+    let mut vault = load(root, passphrase.as_bytes(), config)?;
+    let vector = embedding::embed(&text, config).await?;
+    let id = vault
+        .entries
+        .iter()
+        .map(|entry| entry.id)
+        .max()
+        .map_or(1, |max| max.saturating_add(1));
+    vault.entries.push(Entry {
+        id,
+        text: text.to_string(),
+        source_agent: agent_id.map(str::to_owned),
+        embedding_model: config.embedding.model.clone(),
+        embedding: vector,
+    });
+    save(root, &vault, passphrase.as_bytes(), config)
+}
+
+pub fn list_with_passphrase(
+    root: &Path,
+    passphrase: Zeroizing<String>,
+    config: &Config,
+) -> Result<Vec<(u64, String, Zeroizing<String>)>> {
+    validate_passphrase(&passphrase)?;
+    ensure_private_dir(root)?;
+    let _lock = lock(root)?;
+    let vault = load(root, passphrase.as_bytes(), config)?;
+    Ok(vault
+        .entries
+        .iter()
+        .rev()
+        .take(config.memory_policy.max_list_entries)
+        .map(|entry| {
+            (
+                entry.id,
+                entry.source_agent.clone().unwrap_or_default(),
+                Zeroizing::new(entry.text.clone()),
+            )
+        })
+        .collect())
+}
+
+pub async fn search_with_passphrase(
+    root: &Path,
+    query: Zeroizing<String>,
+    passphrase: Zeroizing<String>,
+    agent_id: Option<&str>,
+    config: &Config,
+) -> Result<Vec<(f32, u64, String, Zeroizing<String>)>> {
+    validate_passphrase(&passphrase)?;
+    validate_agent_id(agent_id, config)?;
+    if query.trim().is_empty() {
+        bail!("memory search query is empty");
+    }
+    if query.len() as u64 > config.memory_policy.max_entry_bytes {
+        bail!("memory search query exceeds the configured size limit");
+    }
+    ensure_private_dir(root)?;
+    let _lock = lock(root)?;
+    let vault = load(root, passphrase.as_bytes(), config)?;
+    let query_vector = embedding::embed(&query, config).await?;
+    let mut ranked: Vec<(f32, &Entry)> = vault
+        .entries
+        .iter()
+        .filter(|entry| {
+            (agent_id.is_none()
+                || entry.source_agent.is_none()
+                || entry.source_agent.as_deref() == agent_id)
+                && entry.embedding_model == config.embedding.model
+                && entry.embedding.len() == query_vector.len()
+        })
+        .map(|entry| (cosine(&query_vector, &entry.embedding), entry))
+        .collect();
+    ranked.sort_by(|left, right| right.0.total_cmp(&left.0));
+    Ok(ranked
+        .into_iter()
+        .take(config.memory_policy.max_search_results)
+        .map(|(score, entry)| {
+            (
+                score,
+                entry.id,
+                entry.source_agent.clone().unwrap_or_default(),
+                Zeroizing::new(entry.text.clone()),
+            )
+        })
+        .collect())
+}
+
 fn derive_key(password: &[u8], salt: &[u8], config: &Config) -> Result<Zeroizing<[u8; 32]>> {
     let params = Params::new(
         config.security.argon2_memory_kib,
@@ -237,13 +371,13 @@ fn load(root: &Path, password: &[u8], config: &Config) -> Result<Vault> {
             bail!("memory vault permissions must deny access to group and other users");
         }
     }
-    if metadata.len() > config.security.max_document_bytes.saturating_mul(100) {
+    if metadata.len() > config.memory_policy.max_vault_bytes {
         bail!("memory vault exceeds the configured storage size limit");
     }
     let mut bytes = Vec::new();
-    file.take(config.security.max_document_bytes.saturating_mul(100) + 1)
+    file.take(config.memory_policy.max_vault_bytes + 1)
         .read_to_end(&mut bytes)?;
-    if bytes.len() as u64 > config.security.max_document_bytes.saturating_mul(100) {
+    if bytes.len() as u64 > config.memory_policy.max_vault_bytes {
         bail!("memory vault exceeds the configured storage size limit");
     }
     decrypt(&bytes, password, config)
@@ -280,12 +414,12 @@ async fn add(root: &Path, config: &Config, locale: &Locale, agent_id: Option<&st
     eprintln!("{}", locale.message("memory_input")?);
     let mut text = Zeroizing::new(String::new());
     io::stdin()
-        .take(config.security.max_document_bytes + 1)
+        .take(config.memory_policy.max_entry_bytes + 1)
         .read_to_string(&mut text)?;
     if text.trim().is_empty() {
         bail!("memory text is empty");
     }
-    if text.len() as u64 > config.security.max_document_bytes {
+    if text.len() as u64 > config.memory_policy.max_entry_bytes {
         bail!("{}", locale.message("document_too_large")?);
     }
     let password = read_password(locale.message("vault_passphrase")?)?;
@@ -314,7 +448,12 @@ fn list(root: &Path, config: &Config, locale: &Locale) -> Result<()> {
     let password = read_password(locale.message("vault_passphrase")?)?;
     let _lock = lock(root)?;
     let vault = load(root, password.as_bytes(), config)?;
-    for entry in &vault.entries {
+    for entry in vault
+        .entries
+        .iter()
+        .rev()
+        .take(config.memory_policy.max_list_entries)
+    {
         println!(
             "{}\t{}\t{}",
             entry.id,
@@ -340,10 +479,13 @@ async fn search(
     eprintln!("{}", locale.message("memory_query")?);
     let mut query = Zeroizing::new(String::new());
     io::stdin()
-        .take(config.security.max_document_bytes + 1)
+        .take(config.memory_policy.max_entry_bytes + 1)
         .read_to_string(&mut query)?;
     if query.trim().is_empty() {
         bail!("memory search query is empty");
+    }
+    if query.len() as u64 > config.memory_policy.max_entry_bytes {
+        bail!("memory search query exceeds the configured size limit");
     }
     let password = read_password(locale.message("vault_passphrase")?)?;
     let _lock = lock(root)?;
@@ -362,7 +504,10 @@ async fn search(
         .map(|entry| (cosine(&query_vector, &entry.embedding), entry))
         .collect();
     ranked.sort_by(|left, right| right.0.total_cmp(&left.0));
-    for (score, entry) in ranked.into_iter().take(5) {
+    for (score, entry) in ranked
+        .into_iter()
+        .take(config.memory_policy.max_search_results)
+    {
         println!(
             "{score:.4}\t{}\t{}\t{}",
             entry.id,

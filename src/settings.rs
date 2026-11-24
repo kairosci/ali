@@ -17,6 +17,7 @@ pub struct Config {
     pub embedding: Embedding,
     pub local_chat: LocalChat,
     pub storage: Storage,
+    pub memory_policy: MemoryPolicy,
     pub sensitivity: Vec<SensitivePattern>,
     pub documents: Documents,
     pub semantic_review: SemanticReview,
@@ -61,6 +62,14 @@ pub struct Storage {
     pub qualifier: String,
     pub organization: String,
     pub application: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct MemoryPolicy {
+    pub max_entry_bytes: u64,
+    pub max_vault_bytes: u64,
+    pub max_list_entries: usize,
+    pub max_search_results: usize,
 }
 
 #[derive(Debug, Deserialize)]
@@ -185,6 +194,7 @@ impl Config {
             embedding: runtime.embedding,
             local_chat: runtime.local_chat,
             storage: runtime.storage,
+            memory_policy: runtime.memory_policy,
             sensitivity: sensitivity_file.patterns,
             documents: runtime.documents,
             semantic_review,
@@ -219,6 +229,18 @@ impl Config {
         }
         if config.security.max_document_bytes == 0 {
             anyhow::bail!("security.max_document_bytes must be greater than zero");
+        }
+        if config.memory_policy.max_entry_bytes == 0
+            || config.memory_policy.max_entry_bytes > config.security.max_document_bytes
+            || config.memory_policy.max_vault_bytes < config.memory_policy.max_entry_bytes
+            || config.memory_policy.max_vault_bytes
+                > config.security.max_document_bytes.saturating_mul(100)
+            || config.memory_policy.max_list_entries == 0
+            || config.memory_policy.max_list_entries > 1000
+            || config.memory_policy.max_search_results == 0
+            || config.memory_policy.max_search_results > 100
+        {
+            anyhow::bail!("memory policy bounds are invalid");
         }
         if config.documents.allowed_text_extensions.is_empty()
             || config
@@ -418,6 +440,7 @@ struct RuntimeFile {
     embedding: Embedding,
     local_chat: LocalChat,
     storage: Storage,
+    memory_policy: MemoryPolicy,
     documents: Documents,
 }
 
@@ -511,4 +534,21 @@ const REQUIRED_MESSAGES: &[&str] = &[
     "ui_semantic_analyze",
     "ui_semantic_warning",
     "memory_shared_label",
+    "ui_memory_heading",
+    "ui_memory_passphrase",
+    "ui_memory_confirmation",
+    "ui_memory_initialize",
+    "ui_memory_mismatch",
+    "ui_memory_agent",
+    "ui_memory_text",
+    "ui_memory_add",
+    "ui_memory_list",
+    "ui_memory_query",
+    "ui_memory_search",
+    "ui_memory_searched",
+    "ui_memory_listed",
+    "ui_memory_working",
+    "ui_memory_initialized",
+    "ui_memory_added",
+    "ui_memory_local_notice",
 ];

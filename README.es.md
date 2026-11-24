@@ -58,6 +58,8 @@ cargo run -- memory clear
 
 La frase de contraseña se solicita sin mostrarla en el terminal. El texto, la etiqueta opcional del agente y los vectores se cifran juntos. Las etiquetas son manuales: ALI no recopila automáticamente actividad de agentes. La búsqueda por agente incluye notas compartidas y las asociadas a ese agente configurado. La solicitud de embedding solo llega a la dirección IP loopback de `config/runtime.toml`. Usa `memory --data-dir /ruta/privada` para cambiar la carpeta; se rechazan symlinks y permisos Unix demasiado amplios.
 
+La GUI nativa también permite inicializar la bóveda, guardar y consultar notas y buscar por agente configurado. Borra los campos de frase y consulta al iniciar la operación y pone a cero los campos sensibles al cerrar la ventana. El borrado de la bóveda y la selección de otro directorio siguen disponibles en la CLI.
+
 ## Revisión local de documentos
 
 ```sh

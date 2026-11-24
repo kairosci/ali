@@ -70,6 +70,8 @@ cargo run -- memory clear
 
 The passphrase is entered through a hidden terminal prompt. Memory text, an optional configured agent tag, and vectors are encrypted together. Tags are manual; ALI does not harvest agent activity. Agent-filtered search includes shared notes and notes tagged for that agent. The embedding request goes only to the numeric loopback endpoint in `config/runtime.toml`. Override storage with `memory --data-dir /private/path`; ALI rejects storage directories with broad Unix permissions or symlinks.
 
+The native GUI also supports vault initialization, adding notes, listing notes, and searching by an optional configured agent. It clears passphrase and query fields when an operation starts and zeroizes sensitive GUI fields when the window closes. Vault clearing and storage-path overrides remain CLI operations.
+
 ## Local document review
 
 ```sh
@@ -104,6 +106,9 @@ Required fields: `session_id`, `failed_agent`, `failure` (`crash`, `timeout`, `n
 | `config/model-system/{en,it,fr,es}.md` | Localized model refinement instructions. |
 | `config/handoffs/{en,it,fr,es}.md` | Localized compact handoff templates. |
 | `config/agents.toml` | Explicit agent CLI catalogue. Current adapters are inspection-only. |
+| `config/adapters.toml` | Local and remote protocol catalog with explicit implementation status. |
+
+The `[memory_policy]` section bounds individual entries, encrypted vault size, list results, and search results for both CLI and GUI.
 
 Configuration is loaded from `config/` relative to the current working directory. `--config-dir` or `ALI_CONFIG_DIR` can select another complete configuration directory. `ALI_AGENT_URL` supplies the optional browser destination for `prepare`. The config is parsed and all supported locale keys and templates are validated before work begins.
 

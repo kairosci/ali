@@ -58,6 +58,8 @@ cargo run -- memory clear
 
 La phrase secrète est demandée sans affichage dans le terminal. Texte, tag d’agent facultatif et vecteurs sont chiffrés ensemble. Les tags sont manuels : ALI ne collecte pas l’activité des agents. La recherche par agent inclut les notes partagées et celles de cet agent configuré. L’appel d’embedding cible uniquement l’adresse IP loopback de `config/runtime.toml`. `memory --data-dir /chemin/privé` permet de changer de dossier ; les liens symboliques et permissions Unix trop larges sont refusés.
 
+L’interface native permet aussi d’initialiser le coffre, d’ajouter et consulter des notes et de rechercher par agent configuré. Elle efface les champs de phrase secrète et de requête au lancement de l’opération, puis met à zéro les champs sensibles à la fermeture. L’effacement du coffre et le choix d’un dossier personnalisé restent disponibles dans le CLI.
+
 ## Examen local d’un document
 
 ```sh

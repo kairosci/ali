@@ -20,7 +20,7 @@ The product targets desktop operating systems and web browsers, with native GUI,
 
 ### M0: Safe local foundation, current
 
-Delivered: Rust CLI and native desktop shell, required configuration parsing, four locale catalogs and templates, public GitHub issue brief flow, encrypted opt-in memory, configured agent discovery, local lexical scan, local embedding review, and <=50-line manual hibernation files. Linux formatting, Clippy, and optimized build have passed locally. Cross-platform CI is configured but has not run in this workspace.
+Delivered: Rust CLI and native desktop shell, required configuration parsing, four locale catalogs and templates, public GitHub issue brief flow, encrypted opt-in memory in CLI and GUI, configured agent discovery, local lexical scan, local embedding review, and <=50-line manual hibernation files. Linux formatting, Clippy, optimized build, configuration validation, and GitHub CI on Linux, macOS, and Windows have passed.
 
 Exit evidence: all configuration parses without fallback, outbound actions are explicit, local data paths are bounded and private, and limitations are visible in product docs.
 

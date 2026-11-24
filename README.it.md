@@ -58,6 +58,8 @@ cargo run -- memory clear
 
 La passphrase viene chiesta senza mostrarla nel terminale. Testo, tag agente facoltativo e vettori sono cifrati insieme. I tag sono manuali: ALI non raccoglie automaticamente l’attività degli agenti. La ricerca per agente include note condivise e quelle associate all’agente configurato. La richiesta di embedding raggiunge solo l’indirizzo loopback numerico di `config/runtime.toml`. Si può cambiare la directory con `memory --data-dir /percorso/privato`; ALI rifiuta symlink e permessi Unix troppo ampi.
 
+La GUI nativa permette anche di inizializzare il vault, aggiungere e consultare note e cercare per agente configurato. Svuota i campi della passphrase e della query all’avvio dell’operazione e azzera i campi sensibili alla chiusura della finestra. La cancellazione del vault e la scelta di una directory personalizzata restano operazioni CLI.
+
 ## Revisione locale dei documenti
 
 ```sh

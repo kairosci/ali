@@ -1,5 +1,5 @@
 use crate::{
-    issue, privacy, prompt, provider,
+    issue, memory, privacy, prompt, provider,
     settings::{Config, Locale},
 };
 use anyhow::Result;
@@ -10,12 +10,33 @@ use std::{
     thread,
     time::Duration,
 };
+use zeroize::Zeroizing;
 
 type JobResult = std::result::Result<JobOutput, String>;
 
 enum JobOutput {
     Brief(String),
     SemanticReview { summary: String, redacted: String },
+    Memory { status: String, details: String },
+}
+
+enum MemoryAction {
+    Initialize {
+        passphrase: Zeroizing<String>,
+    },
+    Add {
+        passphrase: Zeroizing<String>,
+        text: Zeroizing<String>,
+        agent_id: Option<String>,
+    },
+    List {
+        passphrase: Zeroizing<String>,
+    },
+    Search {
+        passphrase: Zeroizing<String>,
+        query: Zeroizing<String>,
+        agent_id: Option<String>,
+    },
 }
 
 pub fn run(config_dir: PathBuf, language_override: Option<&str>) -> Result<()> {
@@ -52,6 +73,12 @@ struct Workbench {
     document_output: String,
     redacted_preview: String,
     semantic_result: String,
+    memory_passphrase: String,
+    memory_confirmation: String,
+    memory_text: String,
+    memory_query: String,
+    memory_agent_id: String,
+    memory_results: String,
     status: String,
     job: Option<Receiver<JobResult>>,
 }
@@ -74,6 +101,12 @@ impl Workbench {
             document_output: String::new(),
             redacted_preview: String::new(),
             semantic_result: String::new(),
+            memory_passphrase: String::new(),
+            memory_confirmation: String::new(),
+            memory_text: String::new(),
+            memory_query: String::new(),
+            memory_agent_id: String::new(),
+            memory_results: String::new(),
             status,
             job: None,
         })
@@ -169,6 +202,11 @@ impl Workbench {
                 self.status = self.message("ui_status_scan_done");
                 self.job = None;
             }
+            Ok(Ok(JobOutput::Memory { status, details })) => {
+                self.status = status;
+                self.memory_results = details;
+                self.job = None;
+            }
             Ok(Err(error)) => {
                 self.status = error;
                 self.job = None;
@@ -230,6 +268,115 @@ impl Workbench {
             .map_err(|error: anyhow::Error| error.to_string());
             let _ = sender.send(result);
         });
+    }
+
+    fn start_memory(&mut self, action: MemoryAction) {
+        use zeroize::Zeroize;
+        self.memory_confirmation.zeroize();
+        if self.job.is_some() {
+            self.status = self.message("ui_busy");
+            return;
+        }
+        let config_dir = self.config_dir.clone();
+        let language = self.language.clone();
+        let (sender, receiver) = mpsc::channel();
+        self.job = Some(receiver);
+        self.status = self.message("ui_memory_working");
+        thread::spawn(move || {
+            let result = (|| -> Result<(String, String)> {
+                let config = Config::load(&config_dir)?;
+                let locale = config.locale(&language)?;
+                let root = memory::default_data_dir(&config)?;
+                match action {
+                    MemoryAction::Initialize { passphrase } => {
+                        memory::initialize_with_passphrase(&root, passphrase, &config)?;
+                        Ok((
+                            locale.message("ui_memory_initialized")?.to_owned(),
+                            String::new(),
+                        ))
+                    }
+                    MemoryAction::Add {
+                        passphrase,
+                        text,
+                        agent_id,
+                    } => {
+                        let runtime = tokio::runtime::Builder::new_current_thread()
+                            .enable_all()
+                            .build()?;
+                        runtime.block_on(memory::add_with_passphrase(
+                            &root,
+                            text,
+                            passphrase,
+                            agent_id.as_deref(),
+                            &config,
+                        ))?;
+                        Ok((locale.message("ui_memory_added")?.to_owned(), String::new()))
+                    }
+                    MemoryAction::List { passphrase } => {
+                        let entries = memory::list_with_passphrase(&root, passphrase, &config)?;
+                        let shared = locale.message("memory_shared_label")?;
+                        let details = entries
+                            .iter()
+                            .map(|(id, agent, text)| {
+                                format!(
+                                    "{id}\t{}\t{}",
+                                    if agent.is_empty() { shared } else { agent },
+                                    text.as_str()
+                                )
+                            })
+                            .collect::<Vec<_>>()
+                            .join("\n");
+                        Ok((locale.message("ui_memory_listed")?.to_owned(), details))
+                    }
+                    MemoryAction::Search {
+                        passphrase,
+                        query,
+                        agent_id,
+                    } => {
+                        let runtime = tokio::runtime::Builder::new_current_thread()
+                            .enable_all()
+                            .build()?;
+                        let entries = runtime.block_on(memory::search_with_passphrase(
+                            &root,
+                            query,
+                            passphrase,
+                            agent_id.as_deref(),
+                            &config,
+                        ))?;
+                        let shared = locale.message("memory_shared_label")?;
+                        let details = entries
+                            .iter()
+                            .map(|(score, id, agent, text)| {
+                                format!(
+                                    "{score:.4}\t{id}\t{}\t{}",
+                                    if agent.is_empty() { shared } else { agent },
+                                    text.as_str()
+                                )
+                            })
+                            .collect::<Vec<_>>()
+                            .join("\n");
+                        Ok((locale.message("ui_memory_searched")?.to_owned(), details))
+                    }
+                }
+            })()
+            .map(|(status, details)| JobOutput::Memory { status, details })
+            .map_err(|error: anyhow::Error| error.to_string());
+            let _ = sender.send(result);
+        });
+    }
+}
+
+impl Drop for Workbench {
+    fn drop(&mut self) {
+        use zeroize::Zeroize;
+        self.memory_passphrase.zeroize();
+        self.memory_confirmation.zeroize();
+        self.memory_text.zeroize();
+        self.memory_query.zeroize();
+        self.memory_results.zeroize();
+        self.prompt.zeroize();
+        self.redacted_preview.zeroize();
+        self.semantic_result.zeroize();
     }
 }
 
@@ -346,6 +493,106 @@ impl eframe::App for Workbench {
                             .desired_width(f32::INFINITY),
                     );
                 });
+            ui.separator();
+            ui.collapsing(self.message("ui_memory_heading"), |ui| {
+                ui.label(self.message("ui_memory_passphrase"));
+                ui.add(
+                    egui::TextEdit::singleline(&mut self.memory_passphrase)
+                        .password(true)
+                        .desired_width(f32::INFINITY),
+                );
+                ui.label(self.message("ui_memory_confirmation"));
+                ui.add(
+                    egui::TextEdit::singleline(&mut self.memory_confirmation)
+                        .password(true)
+                        .desired_width(f32::INFINITY),
+                );
+                ui.horizontal(|ui| {
+                    if ui.button(self.message("ui_memory_initialize")).clicked() {
+                        let first = Zeroizing::new(std::mem::take(&mut self.memory_passphrase));
+                        let second = Zeroizing::new(std::mem::take(&mut self.memory_confirmation));
+                        if first != second {
+                            self.status = self.message("ui_memory_mismatch");
+                        } else {
+                            self.start_memory(MemoryAction::Initialize { passphrase: first });
+                        }
+                    }
+                });
+                ui.label(self.message("ui_memory_agent"));
+                egui::ComboBox::from_id_salt("memory-agent")
+                    .selected_text(if self.memory_agent_id.is_empty() {
+                        self.message("memory_shared_label")
+                    } else {
+                        self.config
+                            .agents
+                            .iter()
+                            .find(|agent| agent.id == self.memory_agent_id)
+                            .and_then(|agent| agent.labels.get(&self.language))
+                            .cloned()
+                            .unwrap_or_default()
+                    })
+                    .show_ui(ui, |ui| {
+                        let shared_label = self.message("memory_shared_label");
+                        ui.selectable_value(&mut self.memory_agent_id, String::new(), shared_label);
+                        for agent in &self.config.agents {
+                            if let Some(label) = agent.labels.get(&self.language) {
+                                ui.selectable_value(
+                                    &mut self.memory_agent_id,
+                                    agent.id.clone(),
+                                    label,
+                                );
+                            }
+                        }
+                    });
+                ui.label(self.message("ui_memory_text"));
+                ui.add(
+                    egui::TextEdit::multiline(&mut self.memory_text)
+                        .desired_rows(3)
+                        .desired_width(f32::INFINITY),
+                );
+                ui.horizontal(|ui| {
+                    if ui.button(self.message("ui_memory_add")).clicked() {
+                        let passphrase =
+                            Zeroizing::new(std::mem::take(&mut self.memory_passphrase));
+                        let text = Zeroizing::new(std::mem::take(&mut self.memory_text));
+                        let agent_id = (!self.memory_agent_id.is_empty())
+                            .then(|| self.memory_agent_id.clone());
+                        self.start_memory(MemoryAction::Add {
+                            passphrase,
+                            text,
+                            agent_id,
+                        });
+                    }
+                    if ui.button(self.message("ui_memory_list")).clicked() {
+                        let passphrase =
+                            Zeroizing::new(std::mem::take(&mut self.memory_passphrase));
+                        self.start_memory(MemoryAction::List { passphrase });
+                    }
+                });
+                ui.label(self.message("ui_memory_query"));
+                ui.text_edit_singleline(&mut self.memory_query);
+                if ui.button(self.message("ui_memory_search")).clicked() {
+                    let passphrase = Zeroizing::new(std::mem::take(&mut self.memory_passphrase));
+                    let query = Zeroizing::new(std::mem::take(&mut self.memory_query));
+                    let agent_id =
+                        (!self.memory_agent_id.is_empty()).then(|| self.memory_agent_id.clone());
+                    self.start_memory(MemoryAction::Search {
+                        passphrase,
+                        query,
+                        agent_id,
+                    });
+                }
+                ui.label(self.message("ui_memory_local_notice"));
+                egui::ScrollArea::vertical()
+                    .max_height(120.0)
+                    .show(ui, |ui| {
+                        ui.add(
+                            egui::TextEdit::multiline(&mut self.memory_results)
+                                .desired_rows(4)
+                                .desired_width(f32::INFINITY),
+                        );
+                    });
+            });
             ui.separator();
             ui.label(self.message("ui_open_agent_url"));
             ui.text_edit_singleline(&mut self.agent_url);
