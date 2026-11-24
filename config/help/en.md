@@ -10,7 +10,7 @@ ALI keeps document review, memory, and model analysis on this device by default.
 
 ## Commands
 
-- `ali prepare URL [--output PATH] [--copy] [--open URL] [--model-endpoint LOOPBACK_URL --model NAME] [--profile PROFILE]`: retrieve a public GitHub issue over HTTPS and render a local brief. Model refinement is optional, local-only, and unavailable to restricted profiles. Opening a website never pastes the brief.
+- `ali prepare URL [--output PATH] [--copy] [--open URL] [--model-endpoint LOOPBACK_URL --model NAME] [--profile PROFILE] [--agent-id ID]`: retrieve a public GitHub issue over HTTPS and render a local brief. Model refinement is optional, local-only, and unavailable to restricted profiles. Opening a website never pastes the brief.
 - `ali memory init|add|search|list|clear [--data-dir PATH]`: manage the encrypted local memory vault. `add` and `search` read text from standard input; add `--agent-id ID` to tag a note or search shared notes plus notes tagged for that configured agent. Ollama must already be running at the configured loopback endpoint for embedding operations.
 - `ali privacy scan --input PATH --output PATH`: locally scan a configured UTF-8 text file and create a separate redacted candidate.
 - `ali privacy analyze --input PATH`: compare bounded local text segments with configured multilingual sensitivity descriptions using the loopback embedding service. Similarity cues are not a release decision.

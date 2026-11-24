@@ -2,34 +2,40 @@
 id = "codex-cli"
 executable = "codex"
 mode = "inspect_only"
+prompt_profile = "codex-cli"
 labels = { en = "OpenAI Codex CLI", it = "OpenAI Codex CLI", fr = "OpenAI Codex CLI", es = "OpenAI Codex CLI" }
 
 [[agents]]
 id = "claude-code"
 executable = "claude"
 mode = "inspect_only"
+prompt_profile = "claude-code"
 labels = { en = "Claude Code", it = "Claude Code", fr = "Claude Code", es = "Claude Code" }
 
 [[agents]]
 id = "gemini-cli"
 executable = "gemini"
 mode = "inspect_only"
+prompt_profile = "gemini-cli"
 labels = { en = "Gemini CLI", it = "Gemini CLI", fr = "Gemini CLI", es = "Gemini CLI" }
 
 [[agents]]
 id = "opencode"
 executable = "opencode"
 mode = "inspect_only"
+prompt_profile = "opencode"
 labels = { en = "OpenCode", it = "OpenCode", fr = "OpenCode", es = "OpenCode" }
 
 [[agents]]
 id = "aider"
 executable = "aider"
 mode = "inspect_only"
+prompt_profile = "aider"
 labels = { en = "Aider", it = "Aider", fr = "Aider", es = "Aider" }
 
 [[agents]]
 id = "cursor-agent"
 executable = "cursor-agent"
 mode = "inspect_only"
+prompt_profile = "cursor-agent"
 labels = { en = "Cursor Agent CLI", it = "Cursor Agent CLI", fr = "Cursor Agent CLI", es = "Cursor Agent CLI" }

@@ -98,6 +98,7 @@ pub struct AgentDefinition {
     pub id: String,
     pub executable: String,
     pub mode: String,
+    pub prompt_profile: String,
     pub labels: BTreeMap<String, String>,
 }
 
@@ -173,6 +174,14 @@ impl Config {
             }
             if agent.executable.is_empty() || agent.executable.chars().any(char::is_whitespace) {
                 anyhow::bail!("agent executable must be a single configured path or command name");
+            }
+            if agent.prompt_profile.is_empty()
+                || !agent
+                    .prompt_profile
+                    .bytes()
+                    .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'-')
+            {
+                anyhow::bail!("agent prompt_profile must be a lowercase identifier");
             }
             if agent.mode != "inspect_only" {
                 anyhow::bail!("only inspect_only agent adapters are currently supported");
@@ -396,6 +405,22 @@ impl Config {
             for agent in &config.agents {
                 if !agent.labels.contains_key(locale) {
                     anyhow::bail!("agent {} is missing a {locale} label", agent.id);
+                }
+                let agent_prompt_path =
+                    format!("agent-prompts/{locale}/{}.md", agent.prompt_profile);
+                let agent_prompt = config.template(&agent_prompt_path)?;
+                if agent_prompt.trim().is_empty() {
+                    anyhow::bail!("agent prompt template {agent_prompt_path} is empty");
+                }
+                let mut agent_templates = Environment::new();
+                agent_templates
+                    .add_template("agent", &agent_prompt)
+                    .with_context(|| format!("cannot parse {agent_prompt_path} as a template"))?;
+                agent_templates.get_template("agent")?;
+            }
+            for key in ["ui_agent_target", "ui_agent_generic"] {
+                if !locale_data.messages.contains_key(key) {
+                    anyhow::bail!("locale {locale} is missing required message {key}");
                 }
             }
             for profile in &config.security.restricted_profiles {

@@ -21,7 +21,7 @@ flowchart TB
 
 - **CLI and GUI adapters:** `main.rs` and `gui.rs` collect explicit user actions. Both load one typed configuration and the selected required locale.
 - **GitHub adapter:** `issue.rs` accepts HTTPS URLs for the configured host, uses the public API without credentials, disables proxy inheritance and redirects, and bounds comments/timeouts.
-- **Prompt renderer:** `prompt.rs` parses localized MiniJinja files. Issue values are passed as data, not reparsed as template source.
+- **Prompt renderer:** `prompt.rs` renders the localized issue template and, when selected, appends the configured agent-specific localized Markdown agreement. Issue values are passed as data, not reparsed as template source. Agent profile ids and template completeness are validated at configuration load.
 - **Model adapter:** `provider.rs` permits only credential-free numeric loopback HTTP endpoints, disables proxy inheritance and redirects, and sends content only after an explicit local-model action.
 - **Embedding adapter:** `embedding.rs` calls the configured local Ollama API using a loopback IP and redirect-free client. Embeddings are derived sensitive data, not a redaction proof.
 - **Memory vault:** `memory.rs` serializes user-selected text, optional configured-agent attribution, and vectors, derives a key using bounded Argon2id settings, authenticates/encrypts with XChaCha20-Poly1305, and atomically replaces the vault. The CLI prompts through hidden terminal input; the GUI uses a masked field and transfers a zeroizing passphrase value to its local worker. Passphrases are not stored. Entry, vault, list, and search-result bounds are parsed from `config/runtime.toml`. Agent tags are entered by the user; no agent activity is harvested.

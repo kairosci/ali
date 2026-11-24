@@ -16,7 +16,7 @@ A person supplies an issue URL or text document and receives a locally reviewabl
 
 1. Accept HTTPS GitHub issue and pull request URLs and reject unsupported or malformed URLs with an actionable error.
 2. Fetch public GitHub issue metadata and bounded comments without credentials.
-3. Render a localized prompt from parsed Markdown templates.
+3. Render a localized prompt from parsed Markdown templates, optionally adapted to a configured target agent.
 4. Support stdout, file output, clipboard copy, and explicitly opening an agent website without automatic paste.
 5. Permit local-only model refinement and loopback embedding requests.
 6. Encrypt user-selected memory and embeddings at rest with a passphrase-derived key.

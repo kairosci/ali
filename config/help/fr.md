@@ -10,7 +10,7 @@ ALI garde l’examen des documents, la mémoire et l’analyse des modèles sur 
 
 ## Commandes
 
-- `ali prepare URL [--output CHEMIN] [--copy] [--open URL] [--model-endpoint URL_LOOPBACK --model NOM] [--profile PROFIL]` : récupère une issue GitHub publique par HTTPS et crée un brief local. Le raffinement est facultatif, local uniquement et désactivé pour les profils restreints. Ouvrir un site ne colle pas le brief.
+- `ali prepare URL [--output CHEMIN] [--copy] [--open URL] [--model-endpoint URL_LOOPBACK --model NOM] [--profile PROFIL] [--agent-id ID]` : récupère une issue GitHub publique par HTTPS et crée un brief local. Le raffinement est facultatif, local uniquement et désactivé pour les profils restreints. Ouvrir un site ne colle pas le brief.
 - `ali memory init|add|search|list|clear [--data-dir CHEMIN]` : gère le coffre mémoire local chiffré. `add` et `search` lisent l’entrée standard ; `--agent-id ID` associe une note à un agent ou recherche les notes partagées et celles de cet agent configuré. Ollama doit déjà fonctionner à l’endpoint loopback configuré pour les embeddings.
 - `ali privacy scan --input CHEMIN --output CHEMIN` : analyse localement un fichier texte UTF-8 configuré et crée une copie expurgée séparée.
 - `ali privacy analyze --input CHEMIN` : compare des segments bornés aux descriptions sémantiques multilingues configurées via le service d’embeddings loopback. Les signaux ne décident pas d’une divulgation.

@@ -55,6 +55,9 @@ enum Commands {
         /// Data handling profile from config/runtime.toml.
         #[arg(long)]
         profile: Option<String>,
+        /// Select a configured agent-specific prompt profile.
+        #[arg(long)]
+        agent_id: Option<String>,
     },
     /// Manage the encrypted, local semantic memory vault.
     Memory {
@@ -159,6 +162,7 @@ async fn main() -> Result<()> {
             model_endpoint,
             model,
             profile,
+            agent_id,
         } => {
             let config = settings::Config::load(&cli.config_dir)?;
             let language = cli
@@ -178,11 +182,17 @@ async fn main() -> Result<()> {
             if !known_profile {
                 bail!("unknown data profile: {profile}");
             }
+            if agent_id
+                .as_ref()
+                .is_some_and(|id| !config.agents.iter().any(|agent| agent.id == *id))
+            {
+                bail!("agent id must match an entry in config/agents.toml");
+            }
             if profile != "general" && (copy || open.is_some()) {
                 bail!("{}", locale.message("outbound_blocked")?);
             }
             let issue = issue::fetch(&url, &config).await?;
-            let prompt = prompt::build(&issue, &config, language)?;
+            let prompt = prompt::build_for_agent(&issue, &config, language, agent_id.as_deref())?;
             let prompt = if let Some(endpoint) = model_endpoint {
                 if profile != "general" {
                     bail!("{}", locale.message("restricted_document")?);
@@ -351,10 +361,9 @@ fn print_configured_help() -> Result<bool> {
 
     let args: Vec<_> = env::args_os().skip(1).collect();
     let requested = args.is_empty()
-        || args
-            .iter()
-            .any(|arg| arg == OsStr::new("--help") || arg == OsStr::new("-h"))
-        || args.first().is_some_and(|arg| arg == OsStr::new("help"));
+        || args.iter().any(|arg| {
+            arg == OsStr::new("--help") || arg == OsStr::new("-h") || arg == OsStr::new("help")
+        });
     if !requested {
         return Ok(false);
     }

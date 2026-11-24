@@ -6,7 +6,7 @@ Languages: [English](README.md) · [Italiano](README.it.md) · [Français](READM
 
 ## Security boundary today
 
-- User-interface copy, CLI help, and issue prompts are selected from `config/locales/`, `config/help/`, `config/prompts/`, and `config/model-system/`. Missing translation keys fail; no language fallback is used. Technical diagnostic strings are not fully localized yet.
+- User-interface copy, CLI help, and issue prompts are selected from `config/locales/`, `config/help/`, `config/prompts/`, `config/agent-prompts/`, and `config/model-system/`. Missing translation keys fail; no language fallback is used. Technical diagnostic strings are not fully localized yet.
 - No model API key or GitHub token is accepted from command-line arguments or environment variables. Model refinement accepts only a loopback HTTP endpoint. Embeddings accept only a numeric loopback host and never follow redirects.
 - Restricted profiles cannot refine a prompt through a model. The app does not launch coding agents yet.
 - Restricted profiles also block clipboard export and browser opening from `prepare` and the GUI. These profile controls are user-selected workflow guards, not authentication or an OS security boundary.
@@ -43,7 +43,7 @@ cargo run -- adapters list
 ## Issue brief
 
 ```sh
-cargo run -- prepare https://github.com/owner/repository/issues/123 --copy --open https://chatgpt.com/
+cargo run -- prepare https://github.com/owner/repository/issues/123 --agent-id codex-cli --copy --open https://chatgpt.com/
 cargo run -- --language it prepare https://github.com/owner/repository/issues/123 --output issue-123.prompt.md
 ```
 
@@ -103,9 +103,10 @@ Required fields: `session_id`, `failed_agent`, `failure` (`crash`, `timeout`, `n
 | `config/help/{en,it,fr,es}.md` | Localized CLI command guide shown by `--help`. |
 | `config/locales/{en,it,fr,es}.toml` | Required CLI messages and security/consent wording. |
 | `config/prompts/{en,it,fr,es}.md` | Localized issue brief templates. |
+| `config/agent-prompts/{en,it,fr,es}/{agent}.md` | Localized agent-specific working agreements appended to generated briefs. |
 | `config/model-system/{en,it,fr,es}.md` | Localized model refinement instructions. |
 | `config/handoffs/{en,it,fr,es}.md` | Localized compact handoff templates. |
-| `config/agents.toml` | Explicit agent CLI catalogue. Current adapters are inspection-only. |
+| `config/agents.toml` | Explicit agent CLI catalogue and prompt-profile keys. Current adapters are inspection-only. |
 | `config/adapters.toml` | Local and remote protocol catalog with explicit implementation status. |
 
 The `[memory_policy]` section bounds individual entries, encrypted vault size, list results, and search results for both CLI and GUI.

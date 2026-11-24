@@ -10,7 +10,7 @@ ALI mantiene in locale la revisione dei documenti, la memoria e l’analisi dei 
 
 ## Comandi
 
-- `ali prepare URL [--output PERCORSO] [--copy] [--open URL] [--model-endpoint URL_LOOPBACK --model NOME] [--profile PROFILO]`: recupera via HTTPS una issue pubblica GitHub e crea un brief locale. La rifinitura è facoltativa, solo locale e disabilitata nei profili soggetti a restrizioni. Aprire un sito non incolla il brief.
+- `ali prepare URL [--output PERCORSO] [--copy] [--open URL] [--model-endpoint URL_LOOPBACK --model NOME] [--profile PROFILO] [--agent-id ID]`: recupera via HTTPS una issue pubblica GitHub e crea un brief locale. La rifinitura è facoltativa, solo locale e disabilitata nei profili soggetti a restrizioni. Aprire un sito non incolla il brief.
 - `ali memory init|add|search|list|clear [--data-dir PERCORSO]`: gestisce il vault cifrato locale. `add` e `search` leggono da standard input; `--agent-id ID` associa una nota a un agente o cerca le note condivise e quelle associate a quell’agente configurato. Ollama deve essere già attivo all’endpoint loopback configurato per le operazioni con embedding.
 - `ali privacy scan --input PERCORSO --output PERCORSO`: analizza localmente un file di testo UTF-8 configurato e crea una copia redatta separata.
 - `ali privacy analyze --input PERCORSO`: confronta segmenti limitati del testo con descrizioni semantiche multilingue configurate tramite il servizio embedding loopback. Le segnalazioni non autorizzano l’invio.

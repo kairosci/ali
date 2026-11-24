@@ -10,7 +10,7 @@ ALI mantiene localmente la revisión de documentos, la memoria y el análisis de
 
 ## Comandos
 
-- `ali prepare URL [--output RUTA] [--copy] [--open URL] [--model-endpoint URL_LOOPBACK --model NOMBRE] [--profile PERFIL]`: obtiene por HTTPS una issue pública de GitHub y crea un brief local. El refinamiento es opcional, solo local y está desactivado para perfiles restringidos. Abrir un sitio no pega el brief.
+- `ali prepare URL [--output RUTA] [--copy] [--open URL] [--model-endpoint URL_LOOPBACK --model NOMBRE] [--profile PERFIL] [--agent-id ID]`: obtiene por HTTPS una issue pública de GitHub y crea un brief local. El refinamiento es opcional, solo local y está desactivado para perfiles restringidos. Abrir un sitio no pega el brief.
 - `ali memory init|add|search|list|clear [--data-dir RUTA]`: gestiona el almacén local cifrado. `add` y `search` leen de la entrada estándar; `--agent-id ID` etiqueta una nota o busca notas compartidas y las asociadas al agente configurado. Ollama debe estar iniciado en el endpoint loopback configurado para embeddings.
 - `ali privacy scan --input RUTA --output RUTA`: analiza localmente un archivo de texto UTF-8 configurado y crea una copia redactada independiente.
 - `ali privacy analyze --input RUTA`: compara segmentos acotados con descripciones semánticas multilingües configuradas usando el servicio de embeddings loopback. Las señales no autorizan la divulgación.

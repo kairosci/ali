@@ -6,7 +6,7 @@ Idiomas: [English](README.md) · [Italiano](README.it.md) · [Français](README.
 
 ## Límites de seguridad actuales
 
-- Los textos de interfaz, la guía CLI y los prompts se cargan desde `config/locales/`, `config/help/`, `config/prompts/` y `config/model-system/`. Si falta una traducción, se produce un error; los diagnósticos técnicos aún no están todos localizados.
+- Los textos de interfaz, la guía CLI y los prompts se cargan desde `config/locales/`, `config/help/`, `config/prompts/`, `config/agent-prompts/` y `config/model-system/`. Si falta una traducción, se produce un error; los diagnósticos técnicos aún no están todos localizados.
 - No se aceptan claves API ni tokens de GitHub en argumentos o variables de entorno. El refinamiento solo admite endpoints HTTP loopback. Los embeddings exigen una dirección IP loopback y no siguen redirecciones.
 - Los perfiles restringidos no pueden enviar prompts a un modelo. ALI todavía no inicia agentes de programación.
 - Los perfiles restringidos también bloquean la copia al portapapeles y la apertura del navegador desde `prepare` y la interfaz. Son controles del flujo elegido, no autenticación ni una frontera de seguridad del sistema operativo.
@@ -31,7 +31,7 @@ cargo build --release
 ## Brief de issue
 
 ```sh
-cargo run -- prepare https://github.com/owner/repository/issues/123 --copy --open https://chatgpt.com/
+cargo run -- prepare https://github.com/owner/repository/issues/123 --agent-id codex-cli --copy --open https://chatgpt.com/
 cargo run -- --language es prepare https://github.com/owner/repository/issues/123 --output issue-123.prompt.md
 ```
 
@@ -87,12 +87,14 @@ Campos obligatorios: `session_id`, `failed_agent`, `failure` (`crash`, `timeout`
 | Ruta | Contenido analizado |
 |---|---|
 | `config/runtime.toml` | Idiomas, perfiles, política de red, embeddings locales, almacenamiento, formatos, KDF y límites. |
+| `config/agents.toml` | Claves de ejecutables y perfiles de prompt de los agentes configurados. No se inician agentes. |
 | `config/providers.toml` | API de GitHub y ruta del servicio local compatible. |
 | `config/sensitivity.toml` | Detectores locales de patrones sensibles. |
 | `config/privacy-review.toml` | Referencias semánticas multilingües, límites de segmentos/lotes/duración y umbral de similitud. |
 | `config/help/{en,it,fr,es}.md` | Guía CLI localizada que aparece con `--help`. |
 | `config/locales/{en,it,fr,es}.toml` | Mensajes CLI y textos obligatorios de seguridad/consentimiento. |
 | `config/prompts/{en,it,fr,es}.md` | Plantillas de briefs localizadas. |
+| `config/agent-prompts/{en,it,fr,es}/{agente}.md` | Instrucciones localizadas del agente que se añaden a los briefs generados. |
 | `config/model-system/{en,it,fr,es}.md` | Instrucciones localizadas para refinar el modelo. |
 | `config/handoffs/{en,it,fr,es}.md` | Plantillas de traspaso localizadas. |
 

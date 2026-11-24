@@ -64,6 +64,7 @@ struct Workbench {
     locale: Locale,
     language: String,
     issue_url: String,
+    agent_id: String,
     profile: String,
     prompt: String,
     model_endpoint: String,
@@ -95,6 +96,7 @@ impl Workbench {
             locale,
             language,
             issue_url: String::new(),
+            agent_id: String::new(),
             prompt: String::new(),
             agent_url: String::new(),
             document_input: String::new(),
@@ -129,6 +131,7 @@ impl Workbench {
             return;
         }
         let url = self.issue_url.clone();
+        let agent_id = (!self.agent_id.is_empty()).then(|| self.agent_id.clone());
         let config_dir = self.config_dir.clone();
         let language = self.language.clone();
         let (sender, receiver) = mpsc::channel();
@@ -142,7 +145,7 @@ impl Workbench {
                     .build()?;
                 runtime.block_on(async {
                     let issue = issue::fetch(&url, &config).await?;
-                    prompt::build(&issue, &config, &language)
+                    prompt::build_for_agent(&issue, &config, &language, agent_id.as_deref())
                 })
             })()
             .map_err(|error| error.to_string());
@@ -418,6 +421,29 @@ impl eframe::App for Workbench {
                         let label = self.profile_key(&profile).to_owned();
                         let text = self.message(&label).to_owned();
                         ui.selectable_value(&mut self.profile, profile, text);
+                    }
+                });
+            ui.separator();
+            ui.label(self.message("ui_agent_target"));
+            egui::ComboBox::from_id_salt("prompt-agent")
+                .selected_text(if self.agent_id.is_empty() {
+                    self.message("ui_agent_generic")
+                } else {
+                    self.config
+                        .agents
+                        .iter()
+                        .find(|agent| agent.id == self.agent_id)
+                        .and_then(|agent| agent.labels.get(&self.language))
+                        .cloned()
+                        .unwrap_or_default()
+                })
+                .show_ui(ui, |ui| {
+                    let generic_label = self.message("ui_agent_generic");
+                    ui.selectable_value(&mut self.agent_id, String::new(), generic_label);
+                    for agent in &self.config.agents {
+                        if let Some(label) = agent.labels.get(&self.language) {
+                            ui.selectable_value(&mut self.agent_id, agent.id.clone(), label);
+                        }
                     }
                 });
             ui.separator();
