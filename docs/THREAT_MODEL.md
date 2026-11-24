@@ -32,7 +32,7 @@ User documents and source code; credentials and identity data; local memory and 
 | Handoff contains a secret | Fixed schema, 50 physical lines, bounded source facts, final local scan and review | A secret can be encoded or paraphrased beyond detector capability. |
 | Agent inherits credentials | Current: agent catalogue is inspection-only; ALI launches no agent. | Future process adapters must define an explicit environment allowlist, worktree boundary, and capability policy before launch is implemented. |
 | Memory theft | Current: opt-in encrypted vault, passphrase-derived key, restrictive Unix permissions, symlink checks. | No OS keychain integration; same-user malware can access memory while unlocked. |
-| Local web UI CSRF or DNS rebinding | Current: no local web server exists; GUI is native. | Reassess if a web UI/server is introduced. |
+| Local web UI CSRF or DNS rebinding | Ephemeral numeric loopback bind, one-use bootstrap capability, exact Host checks, exact Origin checks for mutations, SameSite Strict HttpOnly session cookie, no CORS, restrictive CSP, no-store responses, bounded requests. | Same-user local malware can inspect browser state; this is not user authentication. Browser vendors, extensions, and local processes remain in the trusted computing base. |
 | Data left after deletion | Delete records, vector indexes, temp files, and keys; disclose backup limits | Flash translation layers and external backups prevent guaranteed physical erasure. |
 
 ## Security invariants

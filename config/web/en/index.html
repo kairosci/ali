@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>ALI local agent workbench</title>
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/app.js" defer></script>
+</head>
+<body>
+<main>
+<header><h1>ALI</h1><p>Prepare a prompt from a public GitHub issue. This local page does not upload documents or send prompts to a model.</p></header>
+<form id="prepare-form">
+<label for="agent">Target agent</label>
+<select id="agent" name="agent"><option value="">Generic prompt</option></select>
+<label for="issue-url">Public GitHub issue URL</label>
+<input id="issue-url" name="url" type="url" inputmode="url" autocomplete="url" required maxlength="2048">
+<button id="prepare" type="submit">Prepare local prompt</button>
+</form>
+<p id="notice">Only the selected public issue is retrieved. The prompt stays in this browser until you explicitly copy it.</p>
+<p id="status" role="status" aria-live="polite" data-ready="Ready. No prompt has been sent to an agent or model." data-loading="Retrieving the public issue and preparing the prompt locally..." data-success="Prompt prepared locally. Review it before sharing." data-error="The request could not be completed. Check the issue URL and try again." data-copied="Prompt copied to the clipboard." data-copy-error="Clipboard access is unavailable. Select and copy the prompt manually.">Ready. No prompt has been sent to an agent or model.</p>
+<section aria-labelledby="prompt-heading">
+<h2 id="prompt-heading">Generated prompt</h2>
+<textarea id="prompt-output" rows="18" readonly></textarea>
+<button id="copy" type="button" disabled>Copy prompt</button>
+</section>
+</main>
+</body>
+</html>

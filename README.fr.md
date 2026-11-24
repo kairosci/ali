@@ -28,6 +28,16 @@ cargo build --release
 
 `Cargo.lock` verrouille les dépendances. Les installateurs signés et les builds de publication reproductibles ne sont pas encore fournis.
 
+## Interface web locale
+
+Démarrez l’interface navigateur locale :
+
+```sh
+cargo run -- web
+```
+
+ALI ouvre le navigateur avec une capacité à usage unique sur un port éphémère de boucle locale. La session expire après 30 minutes. Seules les issues GitHub publiques sont prises en charge; aucun document n’est téléversé, aucun modèle distant n’est appelé et aucun prompt n’est envoyé.
+
 ## Brief d’issue
 
 ```sh
@@ -87,6 +97,7 @@ Champs obligatoires : `session_id`, `failed_agent`, `failure` (`crash`, `timeout
 | Chemin | Contenu analysé |
 |---|---|
 | `config/runtime.toml` | Langues, profils, politique réseau, embeddings locaux, stockage, formats, KDF et limites. |
+| `config/web/{en,it,fr,es}/` | Ressources statiques localisées servies uniquement par la session loopback. |
 | `config/agents.toml` | Clés des agents configurés et profils de prompt. Les agents ne sont pas lancés. |
 | `config/providers.toml` | API GitHub et chemin du service local compatible. |
 | `config/sensitivity.toml` | Détecteurs locaux de motifs sensibles. |
@@ -102,7 +113,7 @@ La configuration est lue dans `config/` par rapport au répertoire courant. `--c
 
 ## Portée actuelle et feuille de route
 
-Les commandes CLI disponibles sont `prepare`, `memory`, `privacy scan`, `privacy analyze`, `privacy review`, `handoff create`, `agents list` et `gui`. L’interface native est disponible ; l’exécution/supervision/basculement automatiques, les profils authentifiés, l’analyse PDF/Office et les installateurs restent des jalons explicites. Consultez la [feuille de route](docs/ROADMAP.md), l’[architecture](docs/ARCHITECTURE.md), le guide [italien](README.it.md) et le guide [espagnol](README.es.md).
+Les commandes CLI disponibles sont `prepare`, `memory`, `privacy scan`, `privacy analyze`, `privacy review`, `handoff create`, `agents list`, `gui` et `web`. L’interface native est disponible ; l’exécution/supervision/basculement automatiques, les profils authentifiés, l’analyse PDF/Office et les installateurs restent des jalons explicites. Consultez la [feuille de route](docs/ROADMAP.md), l’[architecture](docs/ARCHITECTURE.md), le guide [italien](README.it.md) et le guide [espagnol](README.es.md).
 
 ## Catalogue des adaptateurs
 

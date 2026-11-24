@@ -9,6 +9,7 @@ mod privacy;
 mod prompt;
 mod provider;
 mod settings;
+mod web;
 
 use anyhow::{Context, Result, bail};
 use clap::{Parser, Subcommand};
@@ -89,6 +90,8 @@ enum Commands {
         #[command(subcommand)]
         action: AdapterCommand,
     },
+    /// Start the loopback-only browser interface with a one-use local session capability.
+    Web,
 }
 
 #[derive(Debug, Subcommand)]
@@ -351,6 +354,9 @@ async fn main() -> Result<()> {
             match action {
                 AdapterCommand::List => adapters::list(&config.adapters, language)?,
             }
+        }
+        Commands::Web => {
+            web::run(cli.config_dir, cli.language.as_deref()).await?;
         }
     }
     Ok(())

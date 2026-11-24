@@ -34,6 +34,14 @@ Launch the native desktop interface:
 cargo run -- gui
 ```
 
+Start the local browser interface:
+
+```sh
+cargo run -- web
+```
+
+It binds only to `127.0.0.1` on an ephemeral port, opens the browser through a one-use local capability, and expires the local session after 30 minutes. It prepares prompts from public GitHub issues only. It does not accept documents, call remote models, or submit prompts.
+
 List configured model protocols and their delivery status:
 
 ```sh
@@ -104,6 +112,7 @@ Required fields: `session_id`, `failed_agent`, `failure` (`crash`, `timeout`, `n
 | `config/locales/{en,it,fr,es}.toml` | Required CLI messages and security/consent wording. |
 | `config/prompts/{en,it,fr,es}.md` | Localized issue brief templates. |
 | `config/agent-prompts/{en,it,fr,es}/{agent}.md` | Localized agent-specific working agreements appended to generated briefs. |
+| `config/web/{en,it,fr,es}/` | Localized static browser assets served only through the loopback session. |
 | `config/model-system/{en,it,fr,es}.md` | Localized model refinement instructions. |
 | `config/handoffs/{en,it,fr,es}.md` | Localized compact handoff templates. |
 | `config/agents.toml` | Explicit agent CLI catalogue and prompt-profile keys. Current adapters are inspection-only. |
@@ -115,7 +124,7 @@ Configuration is loaded from `config/` relative to the current working directory
 
 ## Current and planned scope
 
-Current CLI commands are `prepare`, `memory`, `privacy scan`, `privacy analyze`, `privacy review`, `handoff create`, `agents list`, and `gui`. Agent execution/failover, authenticated app profiles, PDF/Office parsing, and platform installers remain explicit milestones. Track them in [the roadmap](docs/ROADMAP.md). See [architecture](docs/ARCHITECTURE.md) and the four localized [user guides](README.it.md), [French](README.fr.md), and [Spanish](README.es.md).
+Current CLI commands are `prepare`, `memory`, `privacy scan`, `privacy analyze`, `privacy review`, `handoff create`, `agents list`, `adapters list`, `gui`, and `web`. Agent execution/failover, authenticated app profiles, PDF/Office parsing, and signed installers remain explicit milestones. Track them in [the roadmap](docs/ROADMAP.md). See [architecture](docs/ARCHITECTURE.md) and the four localized [user guides](README.it.md), [French](README.fr.md), and [Spanish](README.es.md).
 
 ## Adapter catalog
 

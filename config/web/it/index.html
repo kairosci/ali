@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>ALI workbench locale per agenti</title>
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/app.js" defer></script>
+</head>
+<body>
+<main>
+<header><h1>ALI</h1><p>Prepara un prompt da una issue GitHub pubblica. Questa pagina locale non carica documenti e non invia prompt a un modello.</p></header>
+<form id="prepare-form">
+<label for="agent">Agente destinatario</label>
+<select id="agent" name="agent"><option value="">Prompt generico</option></select>
+<label for="issue-url">URL di una issue GitHub pubblica</label>
+<input id="issue-url" name="url" type="url" inputmode="url" autocomplete="url" required maxlength="2048">
+<button id="prepare" type="submit">Prepara il prompt in locale</button>
+</form>
+<p id="notice">Viene recuperata solo la issue pubblica selezionata. Il prompt resta nel browser finché non scegli di copiarlo.</p>
+<p id="status" role="status" aria-live="polite" data-ready="Pronto. Nessun prompt è stato inviato a un agente o modello." data-loading="Recupero della issue pubblica e preparazione locale del prompt..." data-success="Prompt preparato in locale. Rivedilo prima di condividerlo." data-error="Impossibile completare la richiesta. Controlla l’URL della issue e riprova." data-copied="Prompt copiato negli appunti." data-copy-error="Accesso agli appunti non disponibile. Seleziona e copia il prompt manualmente.">Pronto. Nessun prompt è stato inviato a un agente o modello.</p>
+<section aria-labelledby="prompt-heading">
+<h2 id="prompt-heading">Prompt generato</h2>
+<textarea id="prompt-output" rows="18" readonly></textarea>
+<button id="copy" type="button" disabled>Copia il prompt</button>
+</section>
+</main>
+</body>
+</html>

@@ -33,5 +33,10 @@ max_vault_bytes = 67108864
 max_list_entries = 100
 max_search_results = 5
 
+[web]
+enabled = true
+session_seconds = 1800
+max_request_bytes = 16384
+
 [documents]
 allowed_text_extensions = [".txt", ".md", ".csv", ".log", ".json"]

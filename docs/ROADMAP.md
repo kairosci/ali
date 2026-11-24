@@ -54,9 +54,9 @@ Implement version and capability probes, dedicated adapters, explicit working di
 
 Exit evidence: failure injection demonstrates no environment leakage, handoff validation and line cap are enforced, and each adapter publishes its supported mode and known risks.
 
-### M6: Human task layer and usable surfaces
+### M6: Human task layer and usable surfaces (partial)
 
-Add outcome-based workflows for understand, plan, implement, review, research, and handoff. The capability router recommends tools that satisfy task, privacy, and policy constraints. Ship equivalent CLI and native GUI workflows. Add a local web UI behind a loopback-only capability endpoint. Design for keyboard access, screen readers, localization, and clear consent.
+Delivered: a loopback-only, public-issue prompt browser workflow with per-agent localized profiles and a one-use capability session. It does not handle private documents, remote model calls, or agent execution. Remaining: outcome-based task workflows, capability routing, full keyboard/screen-reader review, and workflow parity across CLI, desktop, and browser.
 
 Exit evidence: the user can see why an adapter was selected, change it, inspect context, and stop a transfer from every surface.
 

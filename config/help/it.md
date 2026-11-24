@@ -17,6 +17,7 @@ ALI mantiene in locale la revisione dei documenti, la memoria e l’analisi dei 
 - `ali privacy review --input PERCORSO --output PERCORSO`: oscura localmente i pattern configurati, analizza semanticamente la copia con embedding loopback e la scrive solo se l’analisi locale termina. Non trasferisce mai il documento a un servizio remoto.
 - `ali handoff create [--output PERCORSO]`: legge da standard input lo schema JSON validato e crea una nota locale scansionata di massimo 50 righe.
 - `ali agents list`: controlla solo i percorsi dei comandi dichiarati in `config/agents.toml`; non avvia agenti.
+- `ali web`: apre l’interfaccia browser locale su loopback. Prepara prompt da issue pubbliche GitHub; non accetta caricamenti di documenti.
 - `ali gui`: apre l’interfaccia desktop nativa.
 
 ## Confine dei dati

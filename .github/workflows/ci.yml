@@ -45,8 +45,16 @@ jobs:
       - name: Run Clippy
         run: cargo +1.100.0 clippy --locked --all-targets -- -D warnings
 
+      - name: Run minimal integration tests
+        run: cargo +1.100.0 test --locked
+
       - name: Build CLI and native GUI
         run: cargo +1.100.0 build --locked --release
 
       - name: Validate required configuration catalogs
-        run: cargo +1.100.0 run --locked -- adapters list
+        shell: bash
+        run: |
+          for locale in en it fr es; do
+            cargo +1.100.0 run --locked -- --language "$locale" help
+            cargo +1.100.0 run --locked -- --language "$locale" adapters list
+          done

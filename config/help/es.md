@@ -17,6 +17,7 @@ ALI mantiene localmente la revisión de documentos, la memoria y el análisis de
 - `ali privacy review --input RUTA --output RUTA`: redacta localmente los patrones configurados, revisa semánticamente la copia mediante embeddings loopback y solo la escribe si termina el análisis local. Nunca transfiere el documento a un servicio remoto.
 - `ali handoff create [--output RUTA]`: lee de la entrada estándar el esquema JSON validado y crea una nota local revisada de hasta 50 líneas.
 - `ali agents list`: inspecciona solo las rutas de comandos declaradas en `config/agents.toml`; no inicia agentes.
+- `ali web`: abre la interfaz local del navegador en loopback. Prepara prompts desde issues públicas de GitHub y no acepta documentos.
 - `ali gui`: abre la interfaz de escritorio nativa.
 
 ## Límite de datos

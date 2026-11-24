@@ -28,6 +28,16 @@ cargo build --release
 
 `Cargo.lock` fija las dependencias. Aún no hay instaladores firmados ni compilaciones reproducibles de publicación.
 
+## Interfaz web local
+
+Inicia la interfaz local del navegador:
+
+```sh
+cargo run -- web
+```
+
+ALI abre el navegador con una capacidad de un solo uso en un puerto loopback efímero. La sesión caduca a los 30 minutos. Solo procesa issues públicas de GitHub; no acepta documentos, no llama a modelos remotos y no envía prompts.
+
 ## Brief de issue
 
 ```sh
@@ -87,6 +97,7 @@ Campos obligatorios: `session_id`, `failed_agent`, `failure` (`crash`, `timeout`
 | Ruta | Contenido analizado |
 |---|---|
 | `config/runtime.toml` | Idiomas, perfiles, política de red, embeddings locales, almacenamiento, formatos, KDF y límites. |
+| `config/web/{en,it,fr,es}/` | Recursos estáticos localizados servidos solo en la sesión loopback. |
 | `config/agents.toml` | Claves de ejecutables y perfiles de prompt de los agentes configurados. No se inician agentes. |
 | `config/providers.toml` | API de GitHub y ruta del servicio local compatible. |
 | `config/sensitivity.toml` | Detectores locales de patrones sensibles. |
@@ -102,7 +113,7 @@ La configuración se carga desde `config/` respecto al directorio actual. `--con
 
 ## Alcance actual y hoja de ruta
 
-Los comandos disponibles son `prepare`, `memory`, `privacy scan`, `privacy analyze`, `privacy review`, `handoff create`, `agents list` y `gui`. La interfaz nativa está disponible; la ejecución/supervisión/failover automáticos, perfiles autenticados, análisis PDF/Office e instaladores siguen siendo hitos explícitos. Consulta la [hoja de ruta](docs/ROADMAP.md), [arquitectura](docs/ARCHITECTURE.md), la guía [italiana](README.it.md) y la [francesa](README.fr.md).
+Los comandos disponibles son `prepare`, `memory`, `privacy scan`, `privacy analyze`, `privacy review`, `handoff create`, `agents list`, `gui` y `web`. La interfaz nativa está disponible; la ejecución/supervisión/failover automáticos, perfiles autenticados, análisis PDF/Office e instaladores siguen siendo hitos explícitos. Consulta la [hoja de ruta](docs/ROADMAP.md), [arquitectura](docs/ARCHITECTURE.md), la guía [italiana](README.it.md) y la [francesa](README.fr.md).
 
 ## Catálogo de adaptadores
 

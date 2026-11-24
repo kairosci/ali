@@ -17,6 +17,7 @@ ALI garde l’examen des documents, la mémoire et l’analyse des modèles sur 
 - `ali privacy review --input CHEMIN --output CHEMIN` : masque localement les motifs configurés, examine sémantiquement la copie avec les embeddings loopback et ne l’écrit qu’après réussite de l’analyse locale. Aucun transfert distant n’a lieu.
 - `ali handoff create [--output CHEMIN]` : lit le schéma JSON validé sur l’entrée standard et crée une note locale analysée de 50 lignes au maximum.
 - `ali agents list` : inspecte uniquement les chemins déclarés dans `config/agents.toml` ; aucun agent n’est lancé.
+- `ali web` : ouvre l’interface navigateur locale sur la boucle locale. Elle prépare des prompts à partir d’issues GitHub publiques et refuse les documents téléversés.
 - `ali gui` : ouvre l’interface native.
 
 ## Frontière des données

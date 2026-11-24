@@ -38,7 +38,7 @@ Enterprise policy is additive and deny-by-default. An administrator may distribu
 
 ## Desktop and web surfaces
 
-The CLI and native desktop GUI call shared domain services. A future local web interface must bind only to loopback, use a one-time local capability, validate Host and Origin, apply a restrictive CSP, avoid remote assets and CORS, and expose the same policy checks as the desktop app. A hosted web service is a separate deployment with explicit tenancy, identity, key custody, retention, and threat model. Mobile is outside the product target.
+The CLI, native desktop GUI, and local browser UI call the same prompt preparation services and configuration. The browser UI binds only to IPv4 loopback on an ephemeral port, uses a one-time local capability, validates Host and Origin, applies a restrictive CSP, and avoids remote assets and CORS. It currently accepts public GitHub issue URLs only; it does not upload documents, call models, or submit prompts. A hosted web service is a separate deployment with explicit tenancy, identity, key custody, retention, and threat model. Mobile is outside the product target.
 
 ## Compatibility matrix
 

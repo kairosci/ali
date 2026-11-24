@@ -28,6 +28,16 @@ cargo build --release
 
 `Cargo.lock` blocca le dipendenze. Non sono ancora disponibili installatori firmati o build di rilascio riproducibili.
 
+## Interfaccia web locale
+
+Avvia l’interfaccia browser locale:
+
+```sh
+cargo run -- web
+```
+
+Avvia ALI e apre il browser con una capability monouso su una porta loopback effimera. La sessione scade dopo 30 minuti. Usa solo issue GitHub pubbliche; non accetta documenti, non chiama modelli remoti e non invia prompt.
+
 ## Brief da issue
 
 ```sh
@@ -87,6 +97,7 @@ Campi obbligatori: `session_id`, `failed_agent`, `failure` (`crash`, `timeout`, 
 | Percorso | Contenuto parsato |
 |---|---|
 | `config/runtime.toml` | Lingue, profili, policy di rete, embedding locale, storage, formati documentali, KDF e limiti. |
+| `config/web/{en,it,fr,es}/` | Asset statici localizzati serviti solo tramite la sessione loopback. |
 | `config/agents.toml` | Chiavi degli agenti configurati e profili prompt. Gli agenti non vengono avviati. |
 | `config/providers.toml` | API GitHub e percorso del servizio locale compatibile. |
 | `config/sensitivity.toml` | Rilevatori locali di pattern sensibili. |
@@ -102,7 +113,7 @@ La configurazione viene caricata da `config/` rispetto alla directory corrente. 
 
 ## Ambito attuale e roadmap
 
-I comandi CLI disponibili sono `prepare`, `memory`, `privacy scan`, `privacy analyze`, `privacy review`, `handoff create`, `agents list` e `gui`. La GUI nativa è disponibile; esecuzione/supervisione/failover automatici, profili autenticati, parsing PDF/Office e installatori restano milestone esplicite. Consulta la [roadmap](docs/ROADMAP.md), l’[architettura](docs/ARCHITECTURE.md), la guida [francese](README.fr.md) e la guida [spagnola](README.es.md).
+I comandi CLI disponibili sono `prepare`, `memory`, `privacy scan`, `privacy analyze`, `privacy review`, `handoff create`, `agents list`, `adapters list`, `gui` e `web`. La GUI nativa e l’interfaccia browser locale sono disponibili; esecuzione/supervisione/failover automatici, profili autenticati, parsing PDF/Office e installatori restano milestone esplicite. Consulta la [roadmap](docs/ROADMAP.md), l’[architettura](docs/ARCHITECTURE.md), la guida [francese](README.fr.md) e la guida [spagnola](README.es.md).
 
 ## Catalogo degli adapter
 

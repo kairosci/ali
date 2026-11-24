@@ -18,6 +18,7 @@ pub struct Config {
     pub local_chat: LocalChat,
     pub storage: Storage,
     pub memory_policy: MemoryPolicy,
+    pub web: WebPolicy,
     pub sensitivity: Vec<SensitivePattern>,
     pub documents: Documents,
     pub semantic_review: SemanticReview,
@@ -73,6 +74,13 @@ pub struct MemoryPolicy {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct WebPolicy {
+    pub enabled: bool,
+    pub session_seconds: u64,
+    pub max_request_bytes: usize,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Documents {
     pub allowed_text_extensions: Vec<String>,
 }
@@ -108,7 +116,7 @@ pub struct SensitivePattern {
     pub regex: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Locale {
     pub messages: BTreeMap<String, String>,
 }
@@ -204,6 +212,7 @@ impl Config {
             local_chat: runtime.local_chat,
             storage: runtime.storage,
             memory_policy: runtime.memory_policy,
+            web: runtime.web,
             sensitivity: sensitivity_file.patterns,
             documents: runtime.documents,
             semantic_review,
@@ -250,6 +259,13 @@ impl Config {
             || config.memory_policy.max_search_results > 100
         {
             anyhow::bail!("memory policy bounds are invalid");
+        }
+        if config.web.session_seconds == 0
+            || config.web.session_seconds > 3600
+            || config.web.max_request_bytes == 0
+            || config.web.max_request_bytes > 65536
+        {
+            anyhow::bail!("local web session or request bounds are invalid");
         }
         if config.documents.allowed_text_extensions.is_empty()
             || config
@@ -423,6 +439,22 @@ impl Config {
                     anyhow::bail!("locale {locale} is missing required message {key}");
                 }
             }
+            for key in [
+                "web_request_rejected",
+                "web_invalid_request",
+                "web_issue_failed",
+                "web_prompt_failed",
+            ] {
+                if !locale_data.messages.contains_key(key) {
+                    anyhow::bail!("locale {locale} is missing required message {key}");
+                }
+            }
+            for asset in ["index.html", "app.js", "style.css"] {
+                let path = format!("web/{locale}/{asset}");
+                if config.template(&path)?.trim().is_empty() {
+                    anyhow::bail!("web asset {path} is empty");
+                }
+            }
             for profile in &config.security.restricted_profiles {
                 if !locale_data
                     .messages
@@ -466,6 +498,7 @@ struct RuntimeFile {
     local_chat: LocalChat,
     storage: Storage,
     memory_policy: MemoryPolicy,
+    web: WebPolicy,
     documents: Documents,
 }
 

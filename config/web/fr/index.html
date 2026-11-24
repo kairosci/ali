@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>ALI atelier local d’agents</title>
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/app.js" defer></script>
+</head>
+<body>
+<main>
+<header><h1>ALI</h1><p>Préparez un prompt à partir d’une issue GitHub publique. Cette page locale ne téléverse aucun document et n’envoie aucun prompt à un modèle.</p></header>
+<form id="prepare-form">
+<label for="agent">Agent destinataire</label>
+<select id="agent" name="agent"><option value="">Prompt générique</option></select>
+<label for="issue-url">URL d’une issue GitHub publique</label>
+<input id="issue-url" name="url" type="url" inputmode="url" autocomplete="url" required maxlength="2048">
+<button id="prepare" type="submit">Préparer le prompt local</button>
+</form>
+<p id="notice">Seule l’issue publique sélectionnée est récupérée. Le prompt reste dans ce navigateur jusqu’à sa copie explicite.</p>
+<p id="status" role="status" aria-live="polite" data-ready="Prêt. Aucun prompt n’a été envoyé à un agent ou à un modèle." data-loading="Récupération de l’issue publique et préparation locale du prompt..." data-success="Prompt préparé localement. Relisez-le avant de le partager." data-error="La requête a échoué. Vérifiez l’URL de l’issue et réessayez." data-copied="Prompt copié dans le presse-papiers." data-copy-error="Accès au presse-papiers indisponible. Sélectionnez et copiez le prompt manuellement.">Prêt. Aucun prompt n’a été envoyé à un agent ou à un modèle.</p>
+<section aria-labelledby="prompt-heading">
+<h2 id="prompt-heading">Prompt généré</h2>
+<textarea id="prompt-output" rows="18" readonly></textarea>
+<button id="copy" type="button" disabled>Copier le prompt</button>
+</section>
+</main>
+</body>
+</html>

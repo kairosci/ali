@@ -6,6 +6,7 @@
 flowchart TB
     CLI[Localized CLI] --> Core[Typed Rust services]
     GUI[Native eframe GUI] --> Core
+    Web[Loopback browser UI] --> Core
     Config[Parsed TOML and Markdown] --> Core
     Core --> GitHub[Public GitHub issue adapter]
     Core --> Redactor[Local configured pattern scanner]
@@ -19,7 +20,7 @@ flowchart TB
 
 ## Boundaries
 
-- **CLI and GUI adapters:** `main.rs` and `gui.rs` collect explicit user actions. Both load one typed configuration and the selected required locale.
+- **CLI, desktop, and web adapters:** `main.rs`, `gui.rs`, and `web.rs` collect explicit user actions. All load one typed configuration and the selected required locale. The browser interface binds to IPv4 loopback on an ephemeral port and accepts only a one-use bootstrap capability and short-lived local session cookie.
 - **GitHub adapter:** `issue.rs` accepts HTTPS URLs for the configured host, uses the public API without credentials, disables proxy inheritance and redirects, and bounds comments/timeouts.
 - **Prompt renderer:** `prompt.rs` renders the localized issue template and, when selected, appends the configured agent-specific localized Markdown agreement. Issue values are passed as data, not reparsed as template source. Agent profile ids and template completeness are validated at configuration load.
 - **Model adapter:** `provider.rs` permits only credential-free numeric loopback HTTP endpoints, disables proxy inheritance and redirects, and sends content only after an explicit local-model action.
@@ -29,6 +30,7 @@ flowchart TB
 - **Semantic privacy review:** `privacy analyze` compares bounded original-text segments with configured sensitivity descriptions in every supported locale. `privacy review` first applies configured lexical redaction in memory, then performs semantic analysis against the candidate and writes the local candidate only if the loopback analysis completes within its configured total duration. It emits segment/category cues only; it does not redact semantic content, certify release, or contact a remote model. The GUI runs this combined review in a worker thread.
 - **Handoff:** `handoff.rs` accepts a strict JSON schema from stdin, validates identifier/field bounds, renders a locale template, scans known sensitive patterns, enforces a configured ceiling no greater than 50 lines, and writes a new mode-0600 file.
 - **Agent catalogue:** `agents.rs` reports only executables declared in `config/agents.toml` whose paths are found. It does not verify versions/authentication or run agents. Automatic recovery remains a roadmap item.
+- **Local web interface:** `web.rs` serves only configured local assets and a public-issue prompt flow. It validates Host on every route, checks Origin on mutations, sets a SameSite Strict HttpOnly cookie, caps request bodies, disables caching, and applies a restrictive CSP. It has no CORS, uploads, remote assets, or document-processing endpoint.
 
 ## Data and network policy
 

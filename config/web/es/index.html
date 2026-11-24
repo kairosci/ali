@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>ALI espacio local para agentes</title>
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/app.js" defer></script>
+</head>
+<body>
+<main>
+<header><h1>ALI</h1><p>Prepara un prompt desde una issue pública de GitHub. Esta página local no carga documentos ni envía prompts a un modelo.</p></header>
+<form id="prepare-form">
+<label for="agent">Agente destinatario</label>
+<select id="agent" name="agent"><option value="">Prompt genérico</option></select>
+<label for="issue-url">URL de una issue pública de GitHub</label>
+<input id="issue-url" name="url" type="url" inputmode="url" autocomplete="url" required maxlength="2048">
+<button id="prepare" type="submit">Preparar prompt local</button>
+</form>
+<p id="notice">Solo se obtiene la issue pública seleccionada. El prompt permanece en este navegador hasta que decidas copiarlo.</p>
+<p id="status" role="status" aria-live="polite" data-ready="Listo. No se ha enviado ningún prompt a un agente ni a un modelo." data-loading="Obteniendo la issue pública y preparando el prompt localmente..." data-success="Prompt preparado localmente. Revísalo antes de compartirlo." data-error="No se pudo completar la solicitud. Revisa la URL de la issue e inténtalo de nuevo." data-copied="Prompt copiado al portapapeles." data-copy-error="El portapapeles no está disponible. Selecciona y copia el prompt manualmente.">Listo. No se ha enviado ningún prompt a un agente ni a un modelo.</p>
+<section aria-labelledby="prompt-heading">
+<h2 id="prompt-heading">Prompt generado</h2>
+<textarea id="prompt-output" rows="18" readonly></textarea>
+<button id="copy" type="button" disabled>Copiar prompt</button>
+</section>
+</main>
+</body>
+</html>

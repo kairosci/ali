@@ -17,6 +17,7 @@ ALI keeps document review, memory, and model analysis on this device by default.
 - `ali privacy review --input PATH --output PATH`: apply configured pattern redaction locally, semantically review the redacted candidate through loopback embeddings, then write the candidate only if local review completes. This command never transfers the document to a remote service.
 - `ali handoff create [--output PATH]`: read the validated JSON handoff schema from standard input and create a locally scanned note of at most 50 lines.
 - `ali agents list`: inspect only agent command paths declared in `config/agents.toml`; this does not launch agents.
+- `ali web`: open the loopback-only local browser interface. It prepares public GitHub issue prompts only; it does not accept document uploads.
 - `ali gui`: open the native desktop interface.
 
 ## Data boundary

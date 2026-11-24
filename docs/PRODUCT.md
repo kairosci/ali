@@ -6,7 +6,7 @@ Starting coding-agent work from an issue repeatedly requires collecting the issu
 
 ## Product direction
 
-Provide a cross-platform Rust workbench with CLI and native GUI. It prepares source-grounded issue briefs, scans supported text documents locally, stores optional encrypted semantic memory, and creates bounded handoff notes. Prompt content, locale catalogues, provider settings, detector patterns, and agent catalogue are parsed from `config/`.
+Provide a cross-platform Rust workbench with CLI, native GUI, and a loopback browser interface. It prepares source-grounded issue briefs, scans supported text documents locally, stores optional encrypted semantic memory, and creates bounded handoff notes. Prompt content, locale catalogues, provider settings, detector patterns, and agent catalogue are parsed from `config/`.
 
 ## Primary user and outcome
 
@@ -25,6 +25,7 @@ A person supplies an issue URL or text document and receives a locally reviewabl
 9. Create a validated, sensitive-pattern-scanned handoff no longer than 50 lines.
 10. Provide CLI and native GUI surfaces using the same configuration and services.
 11. Fail visibly on missing configuration, locale, local model, or secure-storage conditions.
+12. Offer a browser workflow bound to loopback with one-use local capability, strict Host and Origin validation, no document upload, and no prompt submission.
 
 ## Non-goals for the first release
 
@@ -34,6 +35,7 @@ A person supplies an issue URL or text document and receives a locally reviewabl
 - Launching coding agents or automatic failover (planned milestones).
 - Installing models or agents.
 - Claiming that a downstream coding agent completed work.
+- Hosted web application or remote tenancy.
 
 ## Product decisions
 
