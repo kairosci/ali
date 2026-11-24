@@ -28,6 +28,8 @@ mise run build
 
 The checked-in `Cargo.lock` locks application dependencies. Version tags create cross-platform archives as a draft GitHub release for human review. Artifacts are not signed yet.
 
+Run the minimal end-to-end suite with `cargo test --locked`. It launches the built CLI against synthetic files, then opens the native GUI, performs a local scan, and verifies the saved redacted copy when a desktop display is available. CI supplies a virtual display on Linux. The test sources live under `tests/` and do not make external model calls.
+
 Launch the native desktop interface:
 
 ```sh

@@ -29,3 +29,10 @@ These rules apply to every human and automated contributor in this repository.
 ## Required review
 
 For each change, state affected data flows, outbound behavior, persistence behavior, and locale coverage. Run formatting, compilation, static analysis, and the narrowest relevant verification. Do not run a document through an external service during verification.
+
+## End-to-end tests
+
+- Keep a small number of black-box tests under `tests/`. Do not put test modules in `src/`.
+- Tests must invoke the built ALI executable and verify observable behavior, persisted output, and safety boundaries using synthetic data only.
+- Exercise the native desktop application in CI under a virtual display. The GUI smoke mode must open and render the real window, perform a local scan on synthetic input, persist and verify the redacted candidate, then close itself.
+- Never use production data, credentials, environment dumps, external model endpoints, or real issue content in tests.

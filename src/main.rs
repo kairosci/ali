@@ -84,7 +84,17 @@ enum Commands {
         action: AgentCommand,
     },
     /// Launch the native local ALI interface.
-    Gui,
+    Gui {
+        /// Open the desktop window, render its first frame, and close automatically.
+        #[arg(long, hide = true)]
+        smoke_test: bool,
+        /// Exercise a local GUI scan during the smoke run.
+        #[arg(long, hide = true)]
+        smoke_test_input: Option<PathBuf>,
+        /// Write the GUI scan candidate during the smoke run.
+        #[arg(long, hide = true)]
+        smoke_test_output: Option<PathBuf>,
+    },
     /// Show the configuration-driven model protocol catalog.
     Adapters {
         #[command(subcommand)]
@@ -341,8 +351,18 @@ async fn main() -> Result<()> {
                 AgentCommand::List => agents::list(&config, &locale, language)?,
             }
         }
-        Commands::Gui => {
-            gui::run(cli.config_dir, cli.language.as_deref())?;
+        Commands::Gui {
+            smoke_test,
+            smoke_test_input,
+            smoke_test_output,
+        } => {
+            gui::run(
+                cli.config_dir,
+                cli.language.as_deref(),
+                smoke_test,
+                smoke_test_input,
+                smoke_test_output,
+            )?;
         }
         Commands::Adapters { action } => {
             let config = settings::Config::load(&cli.config_dir)?;

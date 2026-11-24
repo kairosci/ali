@@ -31,7 +31,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes \
             libasound2-dev libwayland-dev libx11-dev libxcb1-dev \
-            libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
+            libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev xvfb \
             libxkbcommon-dev libxkbcommon-x11-dev libxrandr-dev libxi-dev libxcursor-dev
 
       - name: Install pinned Rust toolchain and components
@@ -46,7 +46,13 @@ jobs:
         run: cargo +1.100.0 clippy --locked --all-targets -- -D warnings
 
       - name: Run minimal integration tests
-        run: cargo +1.100.0 test --locked
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            xvfb-run -a cargo +1.100.0 test --locked
+          else
+            cargo +1.100.0 test --locked
+          fi
 
       - name: Build CLI and native GUI
         run: cargo +1.100.0 build --locked --release

@@ -39,7 +39,19 @@ enum MemoryAction {
     },
 }
 
-pub fn run(config_dir: PathBuf, language_override: Option<&str>) -> Result<()> {
+pub fn run(
+    config_dir: PathBuf,
+    language_override: Option<&str>,
+    smoke_test: bool,
+    smoke_test_input: Option<PathBuf>,
+    smoke_test_output: Option<PathBuf>,
+) -> Result<()> {
+    if smoke_test_input.is_some() != smoke_test_output.is_some() {
+        anyhow::bail!("GUI smoke scan requires both input and output paths");
+    }
+    if !smoke_test && smoke_test_input.is_some() {
+        anyhow::bail!("GUI smoke scan paths require smoke-test mode");
+    }
     let config = Config::load(&config_dir)?;
     let language = language_override
         .unwrap_or(&config.product.default_locale)
@@ -51,7 +63,13 @@ pub fn run(config_dir: PathBuf, language_override: Option<&str>) -> Result<()> {
         eframe::NativeOptions::default(),
         Box::new(move |_creation| {
             Ok(Box::new(Workbench::new(
-                config_dir, language, locale, config,
+                config_dir,
+                language,
+                locale,
+                config,
+                smoke_test,
+                smoke_test_input,
+                smoke_test_output,
             )?))
         }),
     )
@@ -82,10 +100,20 @@ struct Workbench {
     memory_results: String,
     status: String,
     job: Option<Receiver<JobResult>>,
+    close_after_first_frame: bool,
+    smoke_scan: Option<(PathBuf, PathBuf)>,
 }
 
 impl Workbench {
-    fn new(config_dir: PathBuf, language: String, locale: Locale, config: Config) -> Result<Self> {
+    fn new(
+        config_dir: PathBuf,
+        language: String,
+        locale: Locale,
+        config: Config,
+        smoke_test: bool,
+        smoke_test_input: Option<PathBuf>,
+        smoke_test_output: Option<PathBuf>,
+    ) -> Result<Self> {
         let status = locale.message("ui_status_ready")?.to_owned();
         Ok(Self {
             config_dir,
@@ -99,8 +127,14 @@ impl Workbench {
             agent_id: String::new(),
             prompt: String::new(),
             agent_url: String::new(),
-            document_input: String::new(),
-            document_output: String::new(),
+            document_input: smoke_test_input
+                .as_ref()
+                .map(|path| path.display().to_string())
+                .unwrap_or_default(),
+            document_output: smoke_test_output
+                .as_ref()
+                .map(|path| path.display().to_string())
+                .unwrap_or_default(),
             redacted_preview: String::new(),
             semantic_result: String::new(),
             memory_passphrase: String::new(),
@@ -111,6 +145,8 @@ impl Workbench {
             memory_results: String::new(),
             status,
             job: None,
+            close_after_first_frame: smoke_test,
+            smoke_scan: smoke_test_input.zip(smoke_test_output),
         })
     }
 
@@ -639,6 +675,13 @@ impl eframe::App for Workbench {
         });
         if self.job.is_some() {
             context.request_repaint_after(Duration::from_millis(50));
+        }
+        if self.close_after_first_frame {
+            if self.smoke_scan.take().is_some() {
+                self.scan_document();
+            }
+            self.close_after_first_frame = false;
+            context.send_viewport_cmd(egui::ViewportCommand::Close);
         }
     }
 }
