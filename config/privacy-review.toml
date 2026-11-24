@@ -1,0 +1,29 @@
+chunk_chars = 1200
+max_chunks = 256
+batch_size = 8
+max_review_seconds = 120
+similarity_threshold = 0.34
+
+[[probes]]
+category = "personal_identifiers"
+descriptions = { en = "This passage contains personal identifiers such as a person's name, home address, date of birth, phone number, email, government ID, or details that identify an individual.", it = "Questo passaggio contiene identificativi personali come nome, indirizzo, data di nascita, telefono, email, documento pubblico o dettagli che identificano una persona.", fr = "Ce passage contient des identifiants personnels tels qu'un nom, une adresse, une date de naissance, un téléphone, un e-mail, une pièce d'identité ou des détails permettant d'identifier une personne.", es = "Este fragmento contiene identificadores personales como nombre, domicilio, fecha de nacimiento, teléfono, correo, documento oficial o detalles que identifican a alguien." }
+
+[[probes]]
+category = "credentials_access"
+descriptions = { en = "This passage contains authentication secrets, passwords, API keys, access tokens, private keys, recovery codes, or instructions that grant access to an account or system.", it = "Questo passaggio contiene segreti di autenticazione, password, chiavi API, token di accesso, chiavi private, codici di recupero o istruzioni per accedere a un account o sistema.", fr = "Ce passage contient des secrets d'authentification, mots de passe, clés API, jetons d'accès, clés privées, codes de récupération ou instructions donnant accès à un compte ou système.", es = "Este fragmento contiene secretos de autenticación, contraseñas, claves API, tokens de acceso, claves privadas, códigos de recuperación o instrucciones para acceder a una cuenta o sistema." }
+
+[[probes]]
+category = "legal_case_details"
+descriptions = { en = "This passage discusses a confidential legal matter, client communications, litigation strategy, a person's legal case, court evidence, or privileged attorney work.", it = "Questo passaggio tratta una questione legale riservata, comunicazioni con il cliente, strategia processuale, un caso giudiziario, prove o attività legale protetta.", fr = "Ce passage traite d'une affaire juridique confidentielle, de communications avec un client, d'une stratégie contentieuse, d'un dossier judiciaire, de preuves ou d'un travail protégé.", es = "Este fragmento trata un asunto jurídico confidencial, comunicaciones con un cliente, estrategia procesal, un caso judicial, pruebas o trabajo protegido por secreto profesional." }
+
+[[probes]]
+category = "health_information"
+descriptions = { en = "This passage contains medical or health information, diagnoses, treatment details, medication, disability status, clinical records, or a person's physical or mental health history.", it = "Questo passaggio contiene informazioni mediche o sanitarie, diagnosi, trattamenti, farmaci, disabilità, cartelle cliniche o anamnesi fisica o mentale.", fr = "Ce passage contient des informations médicales ou de santé, diagnostics, traitements, médicaments, handicap, dossiers cliniques ou antécédents physiques ou mentaux.", es = "Este fragmento contiene información médica o sanitaria, diagnósticos, tratamientos, medicamentos, discapacidad, historiales clínicos o antecedentes físicos o mentales." }
+
+[[probes]]
+category = "financial_account_data"
+descriptions = { en = "This passage contains financial account details, payment information, bank records, income, tax information, investments, debts, or a person's financial circumstances.", it = "Questo passaggio contiene dati di conti finanziari, pagamenti, estratti bancari, reddito, informazioni fiscali, investimenti, debiti o situazione economica personale.", fr = "Ce passage contient des coordonnées de compte financier, des paiements, relevés bancaires, revenus, informations fiscales, investissements, dettes ou situation financière personnelle.", es = "Este fragmento contiene datos de cuentas financieras, pagos, extractos bancarios, ingresos, información fiscal, inversiones, deudas o situación económica personal." }
+
+[[probes]]
+category = "confidential_work"
+descriptions = { en = "This passage contains confidential business information, internal source code, unpublished plans, trade secrets, employee records, or non-public operational details.", it = "Questo passaggio contiene informazioni aziendali riservate, codice sorgente interno, piani non pubblicati, segreti commerciali, dati dei dipendenti o dettagli operativi non pubblici.", fr = "Ce passage contient des informations professionnelles confidentielles, du code source interne, des plans non publiés, des secrets commerciaux, des dossiers du personnel ou des détails opérationnels non publics.", es = "Este fragmento contiene información empresarial confidencial, código fuente interno, planes no publicados, secretos comerciales, expedientes laborales o detalles operativos no públicos." }

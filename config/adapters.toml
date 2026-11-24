@@ -1,0 +1,125 @@
+[[adapters]]
+id = "ollama-chat"
+protocol = "openai-compatible-chat"
+status = "implemented"
+locality = "local"
+labels = { en = "Ollama chat", it = "Chat Ollama", fr = "Chat Ollama", es = "Chat de Ollama" }
+
+[[adapters]]
+id = "ollama-embeddings"
+protocol = "ollama-embeddings"
+status = "implemented"
+locality = "local"
+labels = { en = "Ollama embeddings", it = "Embedding Ollama", fr = "Embeddings Ollama", es = "Embeddings de Ollama" }
+
+[[adapters]]
+id = "openai-compatible-remote"
+protocol = "openai-compatible-chat"
+status = "planned"
+locality = "remote"
+labels = { en = "OpenAI-compatible remote APIs", it = "API remote compatibili con OpenAI", fr = "API distantes compatibles avec OpenAI", es = "API remotas compatibles con OpenAI" }
+
+[[adapters]]
+id = "anthropic-messages"
+protocol = "anthropic-messages"
+status = "planned"
+locality = "remote"
+labels = { en = "Anthropic Messages API", it = "API Anthropic Messages", fr = "API Anthropic Messages", es = "API Anthropic Messages" }
+
+[[adapters]]
+id = "google-generative-language"
+protocol = "google-generative-language"
+status = "planned"
+locality = "remote"
+labels = { en = "Google Gemini API", it = "API Google Gemini", fr = "API Google Gemini", es = "API Google Gemini" }
+
+[[adapters]]
+id = "azure-ai"
+protocol = "azure-ai"
+status = "planned"
+locality = "remote"
+labels = { en = "Azure AI", it = "Azure AI", fr = "Azure AI", es = "Azure AI" }
+
+[[adapters]]
+id = "aws-bedrock"
+protocol = "aws-bedrock"
+status = "planned"
+locality = "remote"
+labels = { en = "AWS Bedrock", it = "AWS Bedrock", fr = "AWS Bedrock", es = "AWS Bedrock" }
+
+[[adapters]]
+id = "google-vertex-ai"
+protocol = "google-vertex-ai"
+status = "planned"
+locality = "remote"
+labels = { en = "Google Vertex AI", it = "Google Vertex AI", fr = "Google Vertex AI", es = "Google Vertex AI" }
+
+[[adapters]]
+id = "mistral-api"
+protocol = "mistral-api"
+status = "planned"
+locality = "remote"
+labels = { en = "Mistral API", it = "API Mistral", fr = "API Mistral", es = "API de Mistral" }
+
+[[adapters]]
+id = "cohere-api"
+protocol = "cohere-api"
+status = "planned"
+locality = "remote"
+labels = { en = "Cohere API", it = "API Cohere", fr = "API Cohere", es = "API de Cohere" }
+
+[[adapters]]
+id = "xai-api"
+protocol = "xai-api"
+status = "planned"
+locality = "remote"
+labels = { en = "xAI API", it = "API xAI", fr = "API xAI", es = "API de xAI" }
+
+[[adapters]]
+id = "deepseek-api"
+protocol = "deepseek-api"
+status = "planned"
+locality = "remote"
+labels = { en = "DeepSeek API", it = "API DeepSeek", fr = "API DeepSeek", es = "API de DeepSeek" }
+
+[[adapters]]
+id = "huggingface-inference"
+protocol = "huggingface-inference"
+status = "planned"
+locality = "remote"
+labels = { en = "Hugging Face Inference", it = "Inference Hugging Face", fr = "Inference Hugging Face", es = "Inference de Hugging Face" }
+
+[[adapters]]
+id = "openrouter-api"
+protocol = "openrouter-api"
+status = "planned"
+locality = "remote"
+labels = { en = "OpenRouter API", it = "API OpenRouter", fr = "API OpenRouter", es = "API de OpenRouter" }
+
+[[adapters]]
+id = "llama-cpp-server"
+protocol = "openai-compatible-chat"
+status = "planned"
+locality = "local"
+labels = { en = "llama.cpp server", it = "Server llama.cpp", fr = "Serveur llama.cpp", es = "Servidor llama.cpp" }
+
+[[adapters]]
+id = "lm-studio"
+protocol = "openai-compatible-chat"
+status = "planned"
+locality = "local"
+labels = { en = "LM Studio", it = "LM Studio", fr = "LM Studio", es = "LM Studio" }
+
+[[adapters]]
+id = "vllm"
+protocol = "openai-compatible-chat"
+status = "planned"
+locality = "local"
+labels = { en = "vLLM", it = "vLLM", fr = "vLLM", es = "vLLM" }
+
+[[adapters]]
+id = "localai"
+protocol = "openai-compatible-chat"
+status = "planned"
+locality = "local"
+labels = { en = "LocalAI", it = "LocalAI", fr = "LocalAI", es = "LocalAI" }

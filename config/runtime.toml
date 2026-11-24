@@ -1,0 +1,31 @@
+[product]
+default_locale = "en"
+supported_locales = ["en", "it", "fr", "es"]
+
+[security]
+default_profile = "general"
+restricted_profiles = ["development", "legal", "judicial", "health", "finance", "identity"]
+outbound_default = "deny"
+max_handoff_lines = 50
+max_document_bytes = 10485760
+argon2_memory_kib = 65536
+argon2_iterations = 3
+argon2_lanes = 1
+
+[embedding]
+provider = "ollama"
+base_url = "http://127.0.0.1:11434"
+model = "embeddinggemma"
+request_timeout_seconds = 30
+
+[local_chat]
+base_url = "http://127.0.0.1:11434"
+model = "qwen2.5-coder"
+
+[storage]
+qualifier = "org"
+organization = "ALI"
+application = "ALI"
+
+[documents]
+allowed_text_extensions = [".txt", ".md", ".csv", ".log", ".json"]

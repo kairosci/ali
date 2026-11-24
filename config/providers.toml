@@ -1,0 +1,6 @@
+[providers]
+github_web_host = "github.com"
+github_api_base = "https://api.github.com"
+openai_compatible_path = "/v1/chat/completions"
+request_timeout_seconds = 60
+max_comments = 100

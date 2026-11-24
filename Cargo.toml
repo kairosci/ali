@@ -1,0 +1,40 @@
+[package]
+name = "ali"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "A local-first agent workbench for people and their sensitive work"
+license = "MIT"
+
+[[bin]]
+name = "ali"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0"
+argon2 = "0.5"
+arboard = "3.6"
+chacha20poly1305 = "0.10"
+libc = "0.2"
+clap = { version = "4.5", features = ["derive", "env"] }
+directories = "6.0"
+eframe = "0.31"
+fs2 = "0.4"
+rand = "0.8"
+regex = "1.11"
+minijinja = { version = "2.12", features = ["builtins"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+rpassword = "7.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.43", features = ["macros", "rt-multi-thread", "time"] }
+toml = "0.8"
+tempfile = "3.15"
+url = "2.5"
+webbrowser = "1.2"
+zeroize = { version = "1.8", features = ["derive"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

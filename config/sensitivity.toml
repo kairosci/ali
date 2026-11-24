@@ -1,0 +1,23 @@
+[[patterns]]
+category = "email"
+regex = '''(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b'''
+
+[[patterns]]
+category = "us_social_security_number"
+regex = '''\b\d{3}[- ]\d{2}[- ]\d{4}\b'''
+
+[[patterns]]
+category = "italian_tax_code"
+regex = '''(?i)\b[A-Z]{6}\d{2}[A-EHLMPR-T]\d{2}[A-Z]\d{3}[A-Z]\b'''
+
+[[patterns]]
+category = "payment_card_candidate"
+regex = '''\b(?:\d[ -]?){13,19}\b'''
+
+[[patterns]]
+category = "credential_token"
+regex = '''(?i)\b(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9_-]{20,})\b'''
+
+[[patterns]]
+category = "private_key"
+regex = '''(?s)-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----.*?-----END(?: [A-Z0-9]+)? PRIVATE KEY-----'''

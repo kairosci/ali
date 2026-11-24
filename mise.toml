@@ -1,0 +1,18 @@
+[tools]
+rust = "1.100.0"
+
+[tasks.format]
+description = "Check Rust formatting"
+run = "cargo fmt --all -- --check"
+
+[tasks.lint]
+description = "Run Clippy with warnings denied"
+run = "cargo clippy --locked --all-targets -- -D warnings"
+
+[tasks.build]
+description = "Build the CLI and native desktop application"
+run = "cargo build --locked --release"
+
+[tasks.verify]
+description = "Run local non-test quality gates"
+depends = ["format", "lint", "build"]
